@@ -1,10 +1,21 @@
+from ..controller.pivoting_controller import PivotingController
 from fastapi.routing import APIRouter
-from ..controller.parcial_pivoting import ParcialController
+from typing import List
 
-pivoting_router = APIRouter(prefix="/api")
-parcial_controller = ParcialController()
 
-@pivoting_router.get("/parcial")
-def parcial():
-  return parcial_controller.parcial("Hello")
+
+router = APIRouter(prefix="/pivoting")
+pivoting_controller = PivotingController()
+
+
+@router.post("/parcial")
+def parcial(matriz: List[List[float]]):
+  return pivoting_controller.parcial(matriz)
   
+@router.post("/staggered")
+def staggered(matriz: List[List[float]]):
+  return pivoting_controller.staggered(matriz)
+
+@router.post("/total")
+def total(matriz: List[List[float]]):
+  return pivoting_controller.total(matriz)
