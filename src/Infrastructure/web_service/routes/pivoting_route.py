@@ -20,7 +20,7 @@ def parcial(data: PivotingRequest):
 def staggered(data: PivotingRequest):
   try:
     is_square_matriz(data)
-    return pivoting_controller.parcial(data)
+    return pivoting_controller.staggered(data)
   except HTTPException as error:
     raise error
 
@@ -28,6 +28,6 @@ def staggered(data: PivotingRequest):
 def total(data: PivotingRequest):
   try:
     is_square_matriz(data)
-    return pivoting_controller.parcial(data)
+    return pivoting_controller.total(data)
   except HTTPException as error:
     raise error
