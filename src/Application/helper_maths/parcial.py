@@ -28,7 +28,7 @@ def parcial(matriz, array_col, unknowns):
     print('----------------------------------------------------------------')
   
   if(zeros_below_diagonal(np_matriz) == False):
-    return {"matrix" :np_matriz.tolist(), "Error": "We could'nt convert the numbers below the diagonal to zero"}
+    return {"matrix" :np_matriz.tolist(), "error": "We could'nt convert the numbers below the diagonal to zero, try with other method"}
   
   
   result = reversal_sustitution(np_matriz, unknowns)
