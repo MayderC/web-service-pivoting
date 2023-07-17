@@ -52,3 +52,10 @@ def reversal_sustitution(matriz, symbols):
         symbols_dic[added[j]] = float(result[0])
 
   return symbols_dic
+
+
+def is_row_zero(matriz):
+  for i in range(len(matriz)):
+    if all(matriz[i, :-1] == False):
+      return True
+  return False

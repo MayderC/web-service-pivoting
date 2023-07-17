@@ -1,5 +1,5 @@
 import numpy as np
-from .common import zeros_below_diagonal, reversal_sustitution, get_column, swap_rows
+from .common import zeros_below_diagonal, reversal_sustitution, get_column, swap_rows, is_row_zero
 
 def parcial(matriz, array_col, unknowns):
   only_nums = np.array(matriz).astype(float)
@@ -30,6 +30,8 @@ def parcial(matriz, array_col, unknowns):
   if(zeros_below_diagonal(np_matriz) == False):
     return {"matrix" :np_matriz.tolist(), "error": "We could'nt convert the numbers below the diagonal to zero, try with other method"}
   
+  if(is_row_zero(np_matriz)):
+    return {"matrix" :np_matriz.tolist(), "error": "The equation system  has infinite solutions, cause all elements in a row are zero"}
   
   result = reversal_sustitution(np_matriz, unknowns)
   return {"solution": result, "steps": []}
