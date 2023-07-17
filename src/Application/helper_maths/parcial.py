@@ -36,15 +36,6 @@ def parcial(matriz, array_col, unknowns):
   result = reversal_sustitution(np_matriz, unknowns)
   return {"solution": result, "steps": []}
 
-
-def get_max_abs(array):
-  output = array[0]
-  for i in range(len(array)):
-    if(np.abs(output) < np.abs(array[i])):
-      output = array[i]
-  return output
-
-
 def make_zero(matriz, indexI, dic):
   print('INDEX', indexI, indexI+1)
   elemental_operation =   (matriz[indexI+1][indexI] / matriz[indexI][indexI]) 
@@ -74,3 +65,4 @@ def get_max_abs(array):
     if(np.abs(output) < np.abs(array[i])):
       output = array[i]
   return output
+
