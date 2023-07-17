@@ -23,7 +23,14 @@ def parcial(matriz, array_col, unknowns):
       #cont_step +=1
       #dic_steps.append({'description': update_swap_log(index_pivot[0], i), 'matrices': matrices, "step": cont_step })
     print(np_matriz) 
-    np_matriz = make_zero(np_matriz, i, dic_steps)
+    #np_matriz = make_one(np_matriz, i)
+
+    try:
+      print(np_matriz)
+      np_matriz = make_zero1(np_matriz, i)
+    except Exception as error:
+      return {"matrix": np_matriz.tolist(), "error": str(error) }
+      
     print(np_matriz)
     print('----------------------------------------------------------------')
   
@@ -36,9 +43,32 @@ def parcial(matriz, array_col, unknowns):
   result = reversal_sustitution(np_matriz, unknowns)
   return {"solution": result, "steps": []}
 
-def make_zero(matriz, indexI, dic):
+def make_one(matriz, index):
+  elemental_op = 1/matriz[index][index]
+  for j in range(index, len(matriz)):
+    print(matriz[index][j] * (elemental_op))
+    op = (elemental_op * matriz[index][j])
+    print("RESULT = ", op)
+    matriz[index][j] = float(op)
+  return matriz
+
+def make_zero(matriz, index):
+  for i in range(index+1, len(matriz)):
+    elemental_op = (matriz[i][index]*-1)
+    for j in range(index, len(matriz[i])):
+      if(matriz[i][index] == 0 ):break
+      print(matriz[index][j],'x', elemental_op,'x', matriz[i][j], "OPERACION" ) 
+      op=(matriz[index][j]*elemental_op) +matriz[i][j]
+      print(op, "RESULTADO")
+      matriz[i][j] = float(op)
+  return matriz
+
+def make_zero1(matriz, indexI):
   print('INDEX', indexI, indexI+1)
-  elemental_operation =   (matriz[indexI+1][indexI] / matriz[indexI][indexI]) 
+  elemental_operation =   (matriz[indexI+1][indexI] / matriz[indexI][indexI])
+  if(matriz[indexI][indexI] == 0):
+    raise Exception('Zero  division', str(matriz[index+1][i]) + '/' +str(matriz[index][index])) 
+  print("ELEMENTAL", matriz[indexI+1][indexI], '/', matriz[indexI][indexI]) 
   print("ELEMENTAL", matriz[indexI+1][indexI], '/', matriz[indexI][indexI])
  
   for i in range(indexI+1, len(matriz)):
