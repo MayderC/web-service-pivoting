@@ -18,22 +18,37 @@ def staggered(matriz, array_col, unknowns):
       matrices.append(np.copy(np_matriz).tolist())
       cont_step +=1
       dic_steps.append({'description': string, 'step_matrices' : matrices, "step": cont_step })
-    np_matriz = make_zero(np_matriz, i)
+    try:
+      print(np_matriz)
+      np_matriz = make_zero(np_matriz, i)
+    except Exception as error:
+      return {"matrix": np_matriz.tolist(), "error": str(error) }
 
   if(zeros_below_diagonal(np_matriz) == False):
     return {"matrix" :np_matriz.tolist(), "error": "We could'nt convert the numbers below the diagonal to zero, try with other method"}
   
   if(is_row_zero(np_matriz)):
-    return {"matrix" :np_matriz.tolist(), "error": "The equation system  has infinite solutions, cause all elements in a row are zero"}
+    return {"matrix" :np_matriz.tolist(), "error": "The equation system  has infinite solutions, cause all elements in one row are zero"}
   
   
   result = reversal_sustitution(np_matriz, unknowns)
   return {"solution" : result, "steps": []}
 
+def make_one(matriz, index):
+  elemental_op = 1/matriz[index][index]
+  for j in range(index, len(matriz)):
+    print(matriz[index][j] * (elemental_op))
+    op = (elemental_op * matriz[index][j])
+    print("RESULT = ", op)
+    matriz[index][j] = float(op)
+  return matriz
+
 def make_zero(matriz, index):
   for i in range(len(matriz)-1):
     print((matriz[index+1][i], '/', matriz[index][index]), "ELEME")
     elemental_op = matriz[index+1][i] / matriz[index][index]
+    if(matriz[index][index] == 0):
+      raise Exception('Zero  division', str(matriz[index+1][i]) + '/' +str(matriz[index][index])) 
 
     string = str(matriz[index+1][i]) + '/' + str(matriz[index][index])
     for j in range(len(matriz[i+1])):
