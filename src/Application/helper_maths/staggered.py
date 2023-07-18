@@ -96,21 +96,22 @@ def make_one(matriz, index):
 
 def make_zero(matriz, index):
   print("================================")
-  print("MAKE ZERO INICIO")
+  print("MAKE ZERO INICIO", index)
   print("================================")
   print(matriz)
-  for i in range(len(matriz)-1):
-    elemental_op = matriz[index+1][i] / matriz[index][index]
-    print((matriz[index+1][i], '/', matriz[index][index]), "ELEME")
+  for i in range(index, len(matriz)-1):
+    elemental_op = matriz[i+1][index] / matriz[index][index]
+    print((matriz[i+1][index], '/', matriz[index][index]), "ELEME")
     if(matriz[index][index] == 0):
       raise Exception('Zero  division', str(matriz[index+1][i]) + '/' +str(matriz[index][index])) 
 
-    string = str(matriz[index+1][i]) + '/' + str(matriz[index][index])
-    for j in range(index, len(matriz[i+1])):
-      if(matriz[i+1][j] == 0): break
-      print(matriz[i+1][j], '-', string, '*', matriz[i][j], "OPERACION" )
-      print(matriz[i+1][j]- matriz[index+1][i]/matriz[index][index]*matriz[index][j], "RESULTADO" )
-      matriz[i+1][j] = matriz[i+1][j] - ((elemental_op)* matriz[index][j])
+    string = str(matriz[i+1][index]) + '/' + str(matriz[index][index])
+    for j in range(index, len(matriz[i])):
+      #if(matriz[i+1][j] != 0): break
+  
+      print(matriz[i+1][j], '-', string, '*', matriz[index][j], "OPERACION" )
+      print(matriz[i+1][j] - ((elemental_op)* matriz[index][i]), "RESULTADO" )
+      matriz[i+1][j] = (matriz[i+1][j] - (elemental_op) * matriz[index][j])
     print(matriz)
   print("================================")
   print("MAKE ZERO FIN")
@@ -128,20 +129,47 @@ def get_position_to_swap(matriz, row, col):
   for j in range(row, len(matriz)):
     dividend = matriz[j][col]
     divisor = matriz[j][col]
-
+    temp_op = 0
     for i in range(col,len(matriz[j])-1):
-      if divisor < np.abs(matriz[j][i]):
+      if divisor < matriz[j][i]:
+        print(divisor, "<", matriz[j][i], "ACTUALIZO")
         divisor = matriz[j][i]
-        position = j
+     
 
     temp_op = np.abs(dividend/divisor)
     print(matriz)
     print(dividend, "/", divisor)
     print(temp_op, '>' ,operation, "=", temp_op > operation)
     if( temp_op > operation):
+      print("REMPLAZO")
+      print("POSICION IN IF", j)
       operation = temp_op
       position = j
+    print("POSICION OUT IF", position)
   print("================================")
   print("GET POSITION FIN")
+  print("POSICION FIN", position-1)
   print("================================")
   return position
+
+
+
+def get_position_to_swap2(matriz, row, col):
+
+
+  for i in range(row, len(matriz)):
+    arriba = [row][col]
+    abajo = [row][col]
+    element_op = 0
+    pos = 0
+    for j in range(col, len(matriz)):
+      print(matriz[i][j])
+      if(abajo < matriz[i][j]):
+        abajo = matriz[i][j]
+
+      temp = np.abs(arriba/abajo)
+      if(element_op < temp):
+        element_op = temp
+        pos = j
+    return 0
+
