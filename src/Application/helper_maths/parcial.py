@@ -1,6 +1,10 @@
 import numpy as np
 from .common import zeros_below_diagonal, reversal_sustitution, get_column, swap_rows, is_row_zero
 
+
+PARCIAL = "Parcial pivoting"
+PARCIAL_GAUSS = "Parcial pivoting with Gauss"
+
 def parcial(matriz, array_col, unknowns):
   only_nums = np.array(matriz).astype(float)
   dic_steps = []
@@ -27,7 +31,51 @@ def parcial(matriz, array_col, unknowns):
 
     try:
       print(np_matriz)
-      np_matriz = make_zero1(np_matriz, i)
+      np_matriz = make_zero(np_matriz, i)
+    except Exception as error:
+      raise Exception('Zero  division') 
+      
+    print(np_matriz)
+    print('----------------------------------------------------------------')
+  
+  if(zeros_below_diagonal(np_matriz) == False):
+     raise Exception('Faild') 
+  
+  if(is_row_zero(np_matriz)):
+    raise Exception('Faild') 
+    #return {"matrix" :np_matriz.tolist(), "error": "The equation system  has infinite solutions, cause all elements in a row are zero"}
+  
+  result = reversal_sustitution(np_matriz, unknowns)
+  return {"solution": result, "steps": [], "type": PARCIAL}
+
+def gauss_parcial(matriz, array_col, unknowns):
+  only_nums = np.array(matriz).astype(float)
+  dic_steps = []
+  cont_step = 0
+  np_matriz = np.concatenate((only_nums, np.array(array_col)), axis=1)
+  for i in range(len(np_matriz[0])-2):
+    curret_column = get_column(np_matriz, i)
+    higer = get_max_abs(curret_column)
+
+    #optimizar evitar n al cubo
+    index_pivot = [np.where(np_matriz[:, i] == higer)[0][0], higer]
+    matrices = []
+
+    if not(index_pivot[0] == i):
+      #matrices.append(np.copy(np_matriz).tolist())
+      print(np_matriz)
+      np_matriz = swap_rows(np_matriz, i, index_pivot[0])
+      print(np_matriz)
+      #matrices.append(np.copy(np_matriz).tolist())
+      #cont_step +=1
+      #dic_steps.append({'description': update_swap_log(index_pivot[0], i), 'matrices': matrices, "step": cont_step })
+    print(np_matriz) 
+    #np_matriz = make_one(np_matriz, i)
+
+    try:
+      print(np_matriz)
+      np_matriz = make_one(np_matriz, i)
+      np_matriz = make_zero_gauss(np_matriz, i)
     except Exception as error:
       return {"matrix": np_matriz.tolist(), "error": str(error) }
       
@@ -41,7 +89,7 @@ def parcial(matriz, array_col, unknowns):
     return {"matrix" :np_matriz.tolist(), "error": "The equation system  has infinite solutions, cause all elements in a row are zero"}
   
   result = reversal_sustitution(np_matriz, unknowns)
-  return {"solution": result, "steps": []}
+  return {"solution": result, "steps": [], "type": PARCIAL_GAUSS}
 
 def make_one(matriz, index):
   elemental_op = 1/matriz[index][index]
@@ -52,7 +100,7 @@ def make_one(matriz, index):
     matriz[index][j] = float(op)
   return matriz
 
-def make_zero(matriz, index):
+def make_zero_gauss(matriz, index):
   for i in range(index+1, len(matriz)):
     elemental_op = (matriz[i][index]*-1)
     for j in range(index, len(matriz[i])):
@@ -63,7 +111,7 @@ def make_zero(matriz, index):
       matriz[i][j] = float(op)
   return matriz
 
-def make_zero1(matriz, indexI):
+def make_zero(matriz, indexI):
   print('INDEX', indexI, indexI+1)
   elemental_operation =   (matriz[indexI+1][indexI] / matriz[indexI][indexI])
   if(matriz[indexI][indexI] == 0):
