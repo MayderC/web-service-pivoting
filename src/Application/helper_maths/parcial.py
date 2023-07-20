@@ -92,6 +92,8 @@ def gauss_parcial(matriz, array_col, unknowns):
   return {"solution": result, "steps": [], "type": PARCIAL_GAUSS}
 
 def make_one(matriz, index):
+  if(matriz[index][index] == 0):
+    raise Exception('Zero  division', str(1) + '/' +str(matriz[index][index])) 
   elemental_op = 1/matriz[index][index]
   for j in range(index, len(matriz)):
     print(matriz[index][j] * (elemental_op))
@@ -113,9 +115,9 @@ def make_zero_gauss(matriz, index):
 
 def make_zero(matriz, indexI):
   print('INDEX', indexI, indexI+1)
-  elemental_operation =   (matriz[indexI+1][indexI] / matriz[indexI][indexI])
   if(matriz[indexI][indexI] == 0):
     raise Exception('Zero  division', str(matriz[index+1][i]) + '/' +str(matriz[index][index])) 
+  elemental_operation =   (matriz[indexI+1][indexI] / matriz[indexI][indexI])
   print("ELEMENTAL", matriz[indexI+1][indexI], '/', matriz[indexI][indexI]) 
   print("ELEMENTAL", matriz[indexI+1][indexI], '/', matriz[indexI][indexI])
  
