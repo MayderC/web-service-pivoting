@@ -20,7 +20,10 @@ def total(matriz, array_col, unknowns):
     print('++++++++++++++++++++++++')
     print(np_matriz)
     print(unknowns)
-    make_one(np_matriz, i)
+    try:
+      make_one(np_matriz, i)
+    except Exception as error:
+      return {"matrix": np_matriz.tolist(), "error": str(error) } 
     print(np_matriz)
     make_zero(np_matriz, i)
     print(np_matriz)
@@ -41,7 +44,9 @@ def make_zero(matriz, index):
     print('000000000000000000000000')
 
 def make_one(matriz, index):
-  elemntal_op1 = 1/matriz[index][index] 
+  elemntal_op1 = 1/matriz[index][index]
+  if(matriz[index][index] == 0):
+    raise Exception('Zero  division', str(1) + '/' +str(matriz[index][index]))  
   for i in range(index, len(matriz[index])):
     op = (matriz[index][i]*elemntal_op1)
     matriz[index][i] = op
