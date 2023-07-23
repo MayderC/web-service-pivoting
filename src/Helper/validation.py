@@ -24,12 +24,12 @@ def is_square_matriz(data):
   for i in range(len_of_matriz):
     if all(element == 0 for element in data.matrix[i]):
       raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Make sure there's at least one value in row "+str(i+1))
-  
+ ''' 
   for i in range(len_of_vector):
     temp_len = data.vector[i]
     if(temp_len != 1):
-      raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Foreach element in vector you need to provide an array with one element exatly")
-
+      raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Foreach element in vector you need to provide an array with one element exactly")
+'''
   if(len_of_vector != len_of_unknowns):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="The length of vector and unknowns are not equal")
 
