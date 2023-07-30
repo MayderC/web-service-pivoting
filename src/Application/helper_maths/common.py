@@ -13,13 +13,11 @@ def swap_rows(matriz, row1, row2):
 def zeros_below_diagonal(matriz):
   for i in range(1, len(matriz)):
     for j in range(i):
-      print(matriz[i][j])
       if( matriz[i][j] != 0): return False
   return True
 
 
 def reversal_sustitution(matriz, symbols):
-  print(matriz)
   symbols_dic = {}
   for item in symbols:
     symbols_dic[item] = sp.Symbol(item)
@@ -40,17 +38,20 @@ def reversal_sustitution(matriz, symbols):
       for k in range(len(added)):
         num = arr_no_zeros[k]
         current_symbol = symbols_dic[added[k]]
-        test.append(str(num) + '*' + str(current_symbol) )
+        test.append(str(num))
+        test.append(' * ')
+        test.append(str(current_symbol))
         test.append('+')
         eq += (current_symbol * num)
       test.append(str((constant*-1)))
-      test.append(" = 0")
+      test.append(" = ")
+      test.append('0')
       result = sp.solve(eq + (constant*-1) )
-      print("Ecuacion ",test)
-      print('resultado ', result[0])
       if len(result) > 0 and isinstance(incognit, sp.Symbol):
         symbols_dic[added[j]] = float(result[0])
-
+        print("Ecuacion ",test)
+        print('resultado incognita ',incognit, " = ",result[0])
+  print(symbols_dic)
   return symbols_dic
 
 
