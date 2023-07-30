@@ -24,6 +24,8 @@ def parcial(matriz, array_col, unknowns):
     index_pivot = [np.where(np_matriz[:, i] == higer)[0][0], higer]
     matrices = []
     description = ''
+    current_step = {}
+    pivot = {}
 
     if not(index_pivot[0] == i):
       print("================================")
@@ -44,32 +46,38 @@ def parcial(matriz, array_col, unknowns):
       print("================================")
       print(np_matriz)
       matrices.append(np.copy(np_matriz).tolist())
-      dic_steps.append({'description': swap_row_log(index_pivot[0], i), 'matrices': matrices, "step": cont_step })
-      
-      cont_step =+1
+      pivot['description']= swap_row_log(index_pivot[0], i)
+      pivot["sorted_pivot"] = False
+      pivot['matrices'] = matrices
+      pivot["helping_msg_dev"] = "matrices[0] = before swaping row, matriz[1] = after swaping row"
     else:
       print("================================")
       print("PIVOTE ORDENADO")
       print("================================")
       print(np_matriz)
       matrices.append(np.copy(np_matriz).tolist())
-      cont_step +=1
-      dic_steps.append({'description': "El Pivote ya esta ordenado", 'matrices': matrices, "step": cont_step })
-
+      pivot['description']= "Pivote ordenado, la matriz queda igual"
+      pivot["sorted_pivot"] = True
+      pivot['matrices'] = matrices
+      pivot["helping_msg_dev"] = "matrices[0] is the same, because it was not changed"
     try:
       print("================================")
       print("MATRIZ ANTES DE HACER CERO, CON OPERACION ELEMENTAL")
       print("================================")
       zeros = []
       print(np_matriz)
-      np_matriz = make_zero(np_matriz, i)
+      np_matriz = make_zero(np_matriz, i, zeros)
+      current_step['zero_operations'] = zeros
     except Exception as error:
       raise Exception('Zero  division') 
     print("================================")
     print("MATRIZ DESPUES DE HACER CERO, CON OPERACION ELEMENTAL")
     print("================================")
     print(np_matriz)
-
+    current_step['step']= cont_step
+    current_step['pivot_swap'] = pivot
+    dic_steps.append(current_step)  
+    cont_step =+1
   
   if(zeros_below_diagonal(np_matriz) == False):
      raise Exception("error We could'nt convert the numbers below the diagonal to zero, try with other method") 
@@ -146,34 +154,51 @@ def make_zero_gauss(matriz, index):
       matriz[i][j] = float(op)
   return matriz
 
-def make_zero(matriz, indexI):
+def make_zero(matriz, indexI, zeros):
   print('INDEX', indexI, indexI+1)
   if(matriz[indexI][indexI] == 0):
     raise Exception('Zero  division', str(matriz[index+1][i]) + '/' +str(matriz[index][index])) 
   print("ELEMENTAL", matriz[indexI+1][indexI], '/', matriz[indexI][indexI]) 
 
+  matrix_before = np.copy(matriz).tolist()
  
   for i in range(indexI+1, len(matriz)):
     if(matriz[indexI][indexI] == 0):
       raise Exception('Zero  division', str(matriz[index+1][i]) + '/' +str(matriz[index][index]))
     elemental_operation =   (matriz[i][indexI] / matriz[indexI][indexI])
+    elemental_operation_text = str(matriz[i][indexI]) + "/"+ str(matriz[indexI][indexI])
+    current_operation = {}
+    current_operation["matrices"] =[]
+    current_operation["matrices"].append(np.copy(matriz).tolist())
+    current_operation['elemental_operation']= []
+    current_operation['elemental_operation'].append(str(matriz[i][indexI]) + "/"  + str(matriz[indexI][indexI]))
+    current_operation["row"] = i+1
+    current_operation['operations'] = {
+      "operation" : []
+    }
     for j in range(indexI, len(matriz[i])):
       if(matriz[i][j] == 0): 
         print("================================")
         print("CERO ENCONTRADO, SE OMITE LA OPERACION", "POSICION ", i+1, j+1 )
         print("================================")
         break
-
+      #current_operation['operations']["position"] = []
+      #current_operation['colunm'] = j
       print("================================")
       print("APLICANDO OPERACION", "POSICION ", i+1, j+1 )
       print("================================")
       print(matriz[i][j], " - ",(elemental_operation), " * ",matriz[indexI][j], "CEROO" )
       op = matriz[i][j] - (elemental_operation * matriz[indexI][j])
+
       print("================================")
       print("RESULTADO EN LA ", "POSICION ", i+1, j+1, ' ', op )
       print("================================")
+      current_operation["operations"]['operation'].append(str(matriz[i][j])+" - "+elemental_operation_text+" * "+str(matriz[indexI][j])+" = "+str(op))
       matriz[i][j] = op
       print(matriz)
+      current_operation["matrices"].append(np.copy(matriz).tolist())
+      current_operation['helping_msg_dev'] = "The index of each element in the array named 'operation', represents an index of the column of the currently matrix"
+    zeros.append(current_operation)
   return matriz
 
 
