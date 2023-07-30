@@ -12,21 +12,22 @@ def parcial(matriz, array_col, unknowns):
   only_nums = np.array(matriz).astype(float)
 
   dic_steps = []
-  cont_step = 1
+  cont_step = 0
 
   np_matriz = np.concatenate((only_nums, np.array(array_col)), axis=1)
+  
   print(np_matriz)
   for i in range(len(np_matriz[0])-2):
+
     curret_column = get_column(np_matriz, i)
     higer = get_max_abs(curret_column)
-
-    #optimizar evitar n al cubo
     index_pivot = [np.where(np_matriz[:, i] == higer)[0][0], higer]
+    
+    current_step = {}
     matrices = []
     description = ''
-    current_step = {}
     pivot = {}
-
+    
     if not(index_pivot[0] == i):
       print("================================")
       print("PIVOTE ENCONTRADO FILA ", index_pivot[0]+1)
@@ -74,10 +75,10 @@ def parcial(matriz, array_col, unknowns):
     print("MATRIZ DESPUES DE HACER CERO, CON OPERACION ELEMENTAL")
     print("================================")
     print(np_matriz)
-    current_step['step']= cont_step
+    cont_step = cont_step + 1
+    pivot['step'] = cont_step
     current_step['pivot_swap'] = pivot
     dic_steps.append(current_step)  
-    cont_step =+1
   
   if(zeros_below_diagonal(np_matriz) == False):
      raise Exception("error We could'nt convert the numbers below the diagonal to zero, try with other method") 
@@ -85,9 +86,9 @@ def parcial(matriz, array_col, unknowns):
   if(is_row_zero(np_matriz)):
     return {"matrix" :np_matriz.tolist(), "error": "The equation system  has infinite solutions, cause all elements in a row are zero"}
     #raise Exception("error The equation system  has infinite solutions, cause all elements in a row are zero") 
-   
-  result = reversal_sustitution(np_matriz, unknowns)
-  return {"solution": result, "steps": dic_steps, "type": PARCIAL}
+  rs_arr = []
+  result = reversal_sustitution(np_matriz, unknowns, rs_arr)
+  return {"solution": result, "steps": {"first_operation": dic_steps, "reversal": rs_arr}}
 
 def gauss_parcial(matriz, array_col, unknowns):
   only_nums = np.array(matriz).astype(float)

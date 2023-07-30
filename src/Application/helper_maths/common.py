@@ -17,12 +17,14 @@ def zeros_below_diagonal(matriz):
   return True
 
 
-def reversal_sustitution(matriz, symbols):
+def reversal_sustitution(matriz, symbols, arr):
   symbols_dic = {}
   for item in symbols:
     symbols_dic[item] = sp.Symbol(item)
   result = []
   added = []
+
+
 
   for i in range(len(symbols)-1, -1, -1):
     added.insert(0, symbols[i])
@@ -34,21 +36,26 @@ def reversal_sustitution(matriz, symbols):
       arr_no_zeros = matriz[i][i:len(symbols)]
       constant = matriz[i][-1]
       eq = 0
-      test = []
+      test = ''
+      dic = {}
       for k in range(len(added)):
         num = arr_no_zeros[k]
         current_symbol = symbols_dic[added[k]]
-        test.append(str(num))
-        test.append(' * ')
-        test.append(str(current_symbol))
-        test.append('+')
+        test +=str(num)
+        test +=str(' * ')
+        test +=str(current_symbol)
+        test +=str(' + ')
         eq += (current_symbol * num)
-      test.append(str((constant*-1)))
-      test.append(" = ")
-      test.append('0')
+      test +=str((constant*-1))
+      test +=str(" = ")
+      test +=str('0')
       result = sp.solve(eq + (constant*-1) )
       if len(result) > 0 and isinstance(incognit, sp.Symbol):
         symbols_dic[added[j]] = float(result[0])
+        dic["equation"]=test
+        dic['result']= float(result[0])
+        dic["unknown"] = str(incognit)
+        arr.append(dic)
         print("Ecuacion ",test)
         print('resultado incognita ',incognit, " = ",result[0])
   print(symbols_dic)
