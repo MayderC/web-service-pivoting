@@ -7,10 +7,7 @@ class PivotingService:
     pass
 
   def parcial(sefl, data):
-    try:
-      return helper_parcial(data.matrix, data.vector, data.unknowns)
-    except Exception as err:
-      return gauss_parcial(data.matrix, data.vector, data.unknowns)
+    return helper_parcial(data.matrix, data.vector, data.unknowns)
 
   def staggered(self, data):
     return helper_staggered(data.matrix, data.vector, data.unknowns)
