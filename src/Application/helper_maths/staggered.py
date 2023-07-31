@@ -1,5 +1,8 @@
 import numpy as np
 from .common import swap_rows, reversal_sustitution, zeros_below_diagonal, is_row_zero
+from .log_helper import swap_row_log
+
+
 
 def staggered(matriz, array_col, unknowns):
   print("================================")
@@ -10,23 +13,48 @@ def staggered(matriz, array_col, unknowns):
   np_matriz = np.concatenate((only_nums, np.array(array_col)), axis=1)
 
   dic_steps = []
-  matrices = []
   cont_step = 0
+
+
   for i in range(len(np_matriz)-1):
     position = get_position_to_swap(np_matriz, i, i)
-    print(position, "POSITION")
+
+    current_step = {}
+    matrices = []
+    description = ''
+    pivot = {}
+
     if(position > 0):    
       string = 'Se intercambio la Fila ' + str(position) + ' Por la fila ' + str(i)
       matrices.append(np.copy(np_matriz).tolist())
       np_matriz = swap_rows(np_matriz, i, position)
       matrices.append(np.copy(np_matriz).tolist())
-      cont_step +=1
-      dic_steps.append({'description': string, 'step_matrices' : matrices, "step": cont_step })
+
+      pivot['description']= swap_row_log(position, i)
+      pivot["sorted_pivot"] = False
+      pivot['matrices'] = matrices
+      pivot["helping_msg_dev"] = "matrices[0] = before swaping row, matriz[1] = after swaping row"
+    else:
+      matrices.append(np.copy(np_matriz).tolist())
+      pivot['description']= "Pivote ordenado, la matriz queda igual"
+      pivot["sorted_pivot"] = True
+      pivot['matrices'] = matrices
+      pivot["helping_msg_dev"] = "matrices[0] is the same, because it was not changed"
+
+
     try:
       print(np_matriz)
-      np_matriz = make_zero(np_matriz, i)
+      zeros = []
+      np_matriz = make_zero(np_matriz, i, zeros)
+      current_step['zero_operations'] = zeros
+
     except Exception as error:
       return {"matrix": np_matriz.tolist(), "error": str(error) }
+
+    cont_step = cont_step + 1
+    pivot['step'] = cont_step
+    current_step['pivot_swap'] = pivot
+    dic_steps.append(current_step)
 
   if(zeros_below_diagonal(np_matriz) == False):
     return {"matrix" :np_matriz.tolist(), "error": "We could'nt convert the numbers below the diagonal to zero, try with other method"}
@@ -34,11 +62,11 @@ def staggered(matriz, array_col, unknowns):
   if(is_row_zero(np_matriz)):
     return {"matrix" :np_matriz.tolist(), "error": "The equation system  has infinite solutions, cause all elements in one row are zero"}
   
-  
-  result = reversal_sustitution(np_matriz, unknowns)
-  return {"solution" : result, "steps": []}
+  rs_arr = [] 
+  result = reversal_sustitution(np_matriz, unknowns, rs_arr)
+  return {"solution" : result, "steps": dic_steps, "reversal": rs_arr}
 
-def staggered_gauss(matriz, array_col, unknowns):
+
   print("================================")
   print("STAGGERED INICIO")
   print("================================")
@@ -75,7 +103,7 @@ def staggered_gauss(matriz, array_col, unknowns):
   result = reversal_sustitution(np_matriz, unknowns)
   return {"solution" : result, "steps": []}
 
-def make_one(matriz, index):
+
   print("================================")
   print("MAKE ZERO INICIO")
   print("================================")
@@ -94,25 +122,45 @@ def make_one(matriz, index):
   print(matriz)
   return matriz
 
-def make_zero(matriz, index):
+def make_zero(matriz, index, zeros):
   print("================================")
   print("MAKE ZERO INICIO", index)
   print("================================")
   print(matriz)
+  if(matriz[index][index] == 0):
+    raise Exception('Zero  division',"Numero" + '/' +str(matriz[index][index])) 
+
+
+
   for i in range(index, len(matriz)-1):
     elemental_op = matriz[i+1][index] / matriz[index][index]
-    print((matriz[i+1][index], '/', matriz[index][index]), "ELEME")
+    elemental_operation_text = str(matriz[i+1][index]) + "/"+ str(matriz[index][index])
+
     if(matriz[index][index] == 0):
       raise Exception('Zero  division', str(matriz[index+1][i]) + '/' +str(matriz[index][index])) 
 
-    string = str(matriz[i+1][index]) + '/' + str(matriz[index][index])
+
+    current_operation = {}
+    current_operation["matrices"] =[]
+    current_operation["matrices"].append(np.copy(matriz).tolist())
+    current_operation['elemental_operation']= []
+    current_operation['elemental_operation'].append(elemental_operation_text)
+    current_operation["row"] = i+1
+    current_operation['operations'] = {"operation" : []}
+    current_operation["is_zero"]=False
+
+
     for j in range(index, len(matriz[i])):
-      #if(matriz[i+1][j] != 0): break
-  
-      print(matriz[i+1][j], '-', string, '*', matriz[index][j], "OPERACION" )
-      print(matriz[i+1][j] - ((elemental_op)* matriz[index][i]), "RESULTADO" )
-      matriz[i+1][j] = (matriz[i+1][j] - (elemental_op) * matriz[index][j])
+      op = (matriz[i+1][j] - (elemental_op) * matriz[index][j])
+
+      current_operation["operations"]['operation'].append(str(matriz[i][j])+" - "+elemental_operation_text+" * "+str(matriz[index][j])+" = "+str(op))
+      current_operation['helping_msg_dev'] = "The index of each element in the array named 'operation', represents an index of the column of the currently matrix"
+      
+
+      matriz[i+1][j] = op
     print(matriz)
+    current_operation["matrices"].append(np.copy(matriz).tolist())
+    zeros.append(current_operation)
   print("================================")
   print("MAKE ZERO FIN")
   print("================================")
@@ -151,25 +199,3 @@ def get_position_to_swap(matriz, row, col):
   print("POSICION FIN", position-1)
   print("================================")
   return position
-
-
-
-def get_position_to_swap2(matriz, row, col):
-
-
-  for i in range(row, len(matriz)):
-    arriba = [row][col]
-    abajo = [row][col]
-    element_op = 0
-    pos = 0
-    for j in range(col, len(matriz)):
-      print(matriz[i][j])
-      if(abajo < matriz[i][j]):
-        abajo = matriz[i][j]
-
-      temp = np.abs(arriba/abajo)
-      if(element_op < temp):
-        element_op = temp
-        pos = j
-    return 0
-
