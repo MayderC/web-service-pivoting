@@ -67,8 +67,9 @@ def staggered(matriz, array_col, unknowns):
   
   rs_arr = [] 
   result = reversal_sustitution(np_matriz, unknowns, rs_arr)
-  return {"solution" : result, "steps": dic_steps, "reversal": rs_arr}
-
+  #return {"solution" : result, "steps": dic_steps, "reversal": rs_arr}
+  return {"solution" : result, "steps": {"first_operation": dic_steps, "reversal": rs_arr}}
+  
 
   print("================================")
   print("STAGGERED INICIO")
