@@ -1,6 +1,6 @@
 import numpy as np
 from .common import swap_rows, reversal_sustitution, zeros_below_diagonal, is_row_zero
-from .log_helper import swap_row_log
+from .log_helper import swap_row_log, current_pivot_log
 
 
 
@@ -30,17 +30,20 @@ def staggered(matriz, array_col, unknowns):
       np_matriz = swap_rows(np_matriz, i, position)
       matrices.append(np.copy(np_matriz).tolist())
 
+      pivot['pivot_row'] = current_pivot_log(position)
+      pivot['pivot_value'] = np_matriz[position][i]
       pivot['description']= swap_row_log(position, i)
       pivot["sorted_pivot"] = False
       pivot['matrices'] = matrices
       pivot["helping_msg_dev"] = "matrices[0] = before swaping row, matriz[1] = after swaping row"
     else:
       matrices.append(np.copy(np_matriz).tolist())
+      pivot['pivot_row'] = current_pivot_log(i)
+      pivot['pivot_value'] = np_matriz[i][i]
       pivot['description']= "Pivote ordenado, la matriz queda igual"
       pivot["sorted_pivot"] = True
       pivot['matrices'] = matrices
       pivot["helping_msg_dev"] = "matrices[0] is the same, because it was not changed"
-
 
     try:
       print(np_matriz)
@@ -189,13 +192,9 @@ def get_position_to_swap(matriz, row, col):
     print(dividend, "/", divisor)
     print(temp_op, '>' ,operation, "=", temp_op > operation)
     if( temp_op > operation):
-      print("REMPLAZO")
-      print("POSICION IN IF", j)
       operation = temp_op
       position = j
-    print("POSICION OUT IF", position)
   print("================================")
-  print("GET POSITION FIN")
   print("POSICION FIN", position-1)
   print("================================")
   return position
