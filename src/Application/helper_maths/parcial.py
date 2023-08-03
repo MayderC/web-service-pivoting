@@ -134,7 +134,7 @@ def make_zero(matriz, indexI, zeros):
 
 
     for j in range(indexI, len(matriz[i])):
-      if(matriz[i][j] == 0): 
+      if(j == indexI and matriz[i][j] == 0): 
         print("================================")
         print("CERO ENCONTRADO, SE OMITE LA OPERACION", "POSICION ", i+1, j+1 )
         print("================================")
