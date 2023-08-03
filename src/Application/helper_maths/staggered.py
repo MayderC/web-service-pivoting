@@ -60,71 +60,15 @@ def staggered(matriz, array_col, unknowns):
     dic_steps.append(current_step)
 
   if(zeros_below_diagonal(np_matriz) == False):
-    return {"matrix" :np_matriz.tolist(), "error": "We could'nt convert the numbers below the diagonal to zero, try with other method"}
+    return {"steps": {"first_operation": dic_steps}, "error": "No se puede seguir con sustitución hacia atrás, debido a que al menos un elemento bajo la diagonal no se pudo convertir a cero."}
   
   if(is_row_zero(np_matriz)):
-    return {"matrix" :np_matriz.tolist(), "error": "The equation system  has infinite solutions, cause all elements in one row are zero"}
+    return {"steps": {"first_operation": dic_steps}, "error": "El sistema de ecuaciones tiene infinitas soluciones, todos los valores en una fila son ceros."}
   
   rs_arr = [] 
   result = reversal_sustitution(np_matriz, unknowns, rs_arr)
-  #return {"solution" : result, "steps": dic_steps, "reversal": rs_arr}
   return {"solution" : result, "steps": {"first_operation": dic_steps, "reversal": rs_arr}}
   
-
-  print("================================")
-  print("STAGGERED INICIO")
-  print("================================")
-  print(matriz)
-  only_nums = np.array(matriz).astype(float)
-  np_matriz = np.concatenate((only_nums, np.array(array_col)), axis=1)
-
-  dic_steps = []
-  matrices = []
-  cont_step = 0
-  for i in range(len(np_matriz)-1):
-    position = get_position_to_swap(np_matriz, i, i)
-    print(position, "POSITION")
-    if(position > 0):    
-      string = 'Se intercambio la Fila ' + str(position) + ' Por la fila ' + str(i)
-      matrices.append(np.copy(np_matriz).tolist())
-      np_matriz = swap_rows(np_matriz, i, position)
-      matrices.append(np.copy(np_matriz).tolist())
-      cont_step +=1
-      dic_steps.append({'description': string, 'step_matrices' : matrices, "step": cont_step })
-    try:
-      print(np_matriz)
-      np_matriz = make_zero(np_matriz, i)
-    except Exception as error:
-      return {"matrix": np_matriz.tolist(), "error": str(error) }
-
-  if(zeros_below_diagonal(np_matriz) == False):
-    return {"matrix" :np_matriz.tolist(), "error": "We could'nt convert the numbers below the diagonal to zero, try with other method"}
-  
-  if(is_row_zero(np_matriz)):
-    return {"matrix" :np_matriz.tolist(), "error": "The equation system  has infinite solutions, cause all elements in one row are zero"}
-  
-  
-  result = reversal_sustitution(np_matriz, unknowns)
-  return {"solution" : result, "steps": []}
-
-
-  print("================================")
-  print("MAKE ZERO INICIO")
-  print("================================")
-  print(matriz)
-
-  elemental_op = 1/matriz[index][index]
-  for j in range(index, len(matriz)):
-    print(matriz[index][j] * (elemental_op))
-    op = (elemental_op * matriz[index][j])
-    print("RESULT = ", op)
-    matriz[index][j] = float(op)
-
-  print("================================")
-  print("MAKE ZERO INICIO")
-  print("================================")
-  print(matriz)
-  return matriz
 
 def make_zero(matriz, index, zeros):
   print("================================")

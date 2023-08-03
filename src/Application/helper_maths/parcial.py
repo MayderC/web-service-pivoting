@@ -88,11 +88,11 @@ def parcial(matriz, array_col, unknowns):
     dic_steps.append(current_step)  
   
   if(zeros_below_diagonal(np_matriz) == False):
-     raise Exception("error We could'nt convert the numbers below the diagonal to zero, try with other method") 
+    return {"steps": {"first_operation": dic_steps}, "error": "No se puede seguir con sustitución hacia atrás, debido a que al menos un elemento bajo la diagonal no se pudo convertir a cero."}
   
   if(is_row_zero(np_matriz)):
-    return {"matrix" :np_matriz.tolist(), "error": "The equation system  has infinite solutions, cause all elements in a row are zero"}
-    #raise Exception("error The equation system  has infinite solutions, cause all elements in a row are zero") 
+    return {"steps": {"first_operation": dic_steps}, "error": "El sistema de ecuaciones tiene infinitas soluciones, todos los valores en una fila son ceros."}
+    
   rs_arr = []
   result = reversal_sustitution(np_matriz, unknowns, rs_arr)
   return {"solution": result, "steps": {"first_operation": dic_steps, "reversal": rs_arr}}
