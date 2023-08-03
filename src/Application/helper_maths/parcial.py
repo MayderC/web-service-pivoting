@@ -72,7 +72,7 @@ def parcial(matriz, array_col, unknowns):
 
       zeros = []
       print(np_matriz)
-      np_matriz = make_zero(np_matriz, i, zeros)
+      np_matriz = make_zero2(np_matriz, i, zeros)
       current_step['zero_operations'] = zeros
 
     except Exception as error:
@@ -179,3 +179,48 @@ def get_max_abs(array):
       output = array[i]
   return output
 
+def make_zero2(matriz, index, zeros):
+  print("================================")
+  print("MAKE ZERO INICIO", index)
+  print("================================")
+  print(matriz)
+  if(matriz[index][index] == 0):
+    raise Exception('Zero  division',"Numero" + '/' +str(matriz[index][index])) 
+
+
+
+  for i in range(index, len(matriz)-1):
+    elemental_op = matriz[i+1][index] / matriz[index][index]
+    elemental_operation_text = str(matriz[i+1][index]) + "/"+ str(matriz[index][index])
+
+    if(matriz[index][index] == 0):
+      raise Exception('Zero  division', str(matriz[index+1][i]) + '/' +str(matriz[index][index])) 
+
+
+    current_operation = {}
+    current_operation["matrices"] =[]
+    current_operation["matrices"].append(np.copy(matriz).tolist())
+    current_operation['elemental_operation']= []
+    current_operation['elemental_operation'].append(elemental_operation_text)
+    current_operation["row"] = i+1
+    current_operation['operations'] = {"operation" : []}
+    current_operation["is_zero"]=False
+
+
+    for j in range(index, len(matriz[i])):
+      op = (matriz[i+1][j] - (elemental_op) * matriz[index][j])
+
+      current_operation["operations"]['operation'].append(str(matriz[i][j])+" - "+elemental_operation_text+" * "+str(matriz[index][j])+" = "+str(op))
+      current_operation['helping_msg_dev'] = "The index of each element in the array named 'operation', represents an index of the column of the currently matrix"
+      
+
+      matriz[i+1][j] = op
+    print(matriz)
+    current_operation["matrices"].append(np.copy(matriz).tolist())
+    zeros.append(current_operation)
+  print("================================")
+  print("MAKE ZERO FIN")
+  print("================================")
+  print(matriz)
+
+  return matriz
