@@ -72,11 +72,11 @@ def parcial(matriz, array_col, unknowns):
 
       zeros = []
       print(np_matriz)
-      np_matriz = make_zero2(np_matriz, i, zeros)
+      np_matriz = make_zero(np_matriz, i, zeros)
       current_step['zero_operations'] = zeros
 
     except Exception as error:
-      raise Exception('Zero  division') 
+      return {"matrix": np_matriz.tolist(), "error": str(error) }
     print("================================")
     print("MATRIZ DESPUES DE HACER CERO, CON OPERACION ELEMENTAL")
     print("================================")
@@ -111,14 +111,14 @@ def parcial(matriz, array_col, unknowns):
 def make_zero(matriz, indexI, zeros):
   print('INDEX', indexI, indexI+1)
   if(matriz[indexI][indexI] == 0):
-    raise Exception('Zero  division', str(matriz[index+1][i]) + '/' +str(matriz[index][index])) 
+    raise Exception('Zero  division', str(matriz[indexI+1][indexI]) + '/' +str(matriz[indexI][indexI])) 
   print("ELEMENTAL", matriz[indexI+1][indexI], '/', matriz[indexI][indexI]) 
 
   matrix_before = np.copy(matriz).tolist()
  
   for i in range(indexI+1, len(matriz)):
     if(matriz[indexI][indexI] == 0):
-      raise Exception('Zero  division', str(matriz[index+1][i]) + '/' +str(matriz[index][index]))
+      raise Exception('Zero  division', str(matriz[indexI+1][i]) + '/' +str(matriz[indexI][indexI]))
     elemental_operation =   (matriz[i][indexI] / matriz[indexI][indexI])
     elemental_operation_text = str(matriz[i][indexI]) + "/"+ str(matriz[indexI][indexI])
 
