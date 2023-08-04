@@ -1,5 +1,7 @@
 import numpy as np
 import sympy as sp
+from collections.abc import Iterable
+
 
 def get_column(matriz, pos): return matriz[:, pos][pos:,]
 
@@ -50,7 +52,12 @@ def reversal_sustitution(matriz, symbols, arr):
       test +=str(" = ")
       test +=str('0')
       result = sp.solve(eq + (constant*-1) )
-      if len(result) > 0 and isinstance(incognit, sp.Symbol):
+
+      print("=======================")
+      print(result, "   row ", i)
+      print()
+      print("=======================")
+      if is_row_zero_no_vector(matriz, i) == False and isinstance(result, Iterable) and len(result) > 0 and isinstance(incognit, sp.Symbol):
         symbols_dic[added[j]] = float(result[0])
         dic["equation"]=test
         dic['result']= float(result[0])
@@ -58,12 +65,22 @@ def reversal_sustitution(matriz, symbols, arr):
         arr.append(dic)
         print("Ecuacion ",test)
         print('resultado incognita ',incognit, " = ",result[0])
+      else:
+        symbols_dic[added[j]] = float(matriz[i, -1])
+        dic["equation"]=test
+        dic['result']= float(matriz[i, -1])
+        dic["unknown"] = str(incognit)
+        arr.append(dic)
+        
   print(symbols_dic)
   return symbols_dic
 
 
 def is_row_zero(matriz):
   for i in range(len(matriz)):
-    if all(matriz[i, :-1] == False):
+    if all(matriz[i] == False):
       return True
   return False
+
+def is_row_zero_no_vector(matriz, row):
+    return all(matriz[row, :-1] == False)
