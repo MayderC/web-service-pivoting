@@ -2,7 +2,7 @@ from ..controller.pivoting_controller import PivotingController
 from fastapi.routing import APIRouter
 from ..dto.pivoting_request import PivotingRequest
 from fastapi import HTTPException
-from Helper.validation import validations
+from ..validations.validation import validations
 
 router = APIRouter(prefix="/pivoting")
 pivoting_controller = PivotingController()

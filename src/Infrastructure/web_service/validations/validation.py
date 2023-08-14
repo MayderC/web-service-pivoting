@@ -26,7 +26,7 @@ def validations(data):
       raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Asegúrese de que haya un valor en la fila "+str(i+1))
 
   if(len_of_vector != len_of_unknowns):
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="La longuitud del vector y incognitas deben ser iguales")
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="La longuitud del vector e incognitas deben ser iguales")
 
   if(len_of_matriz != len_of_unknowns):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="La cantidad de filas en la matriz no es igual a la cantidad de elementos en incognitas")
@@ -34,7 +34,10 @@ def validations(data):
   if(len_of_matriz != len_of_vector):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="La cantidad de filas en la matriz no es igual a la cantidad de elementos en incognitas")
 
-    
+  for row in data.vector:
+    if(len(row) != 1):
+      raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Cada elemnento del vector debe ser un vector con un valor exactamente")
+
   
 
   return True
